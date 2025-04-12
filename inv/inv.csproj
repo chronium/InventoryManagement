@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Inv.API\Inv.API.csproj" />
+      <ProjectReference Include="..\Inv.MigrationService\Inv.MigrationService.csproj" />
     </ItemGroup>
 
 </Project>

@@ -20,6 +20,7 @@
       <ProjectReference Include="..\Inv.Application\Inv.Application.csproj" />
       <ProjectReference Include="..\Inv.Domain\Inv.Domain.csproj" />
       <ProjectReference Include="..\Inv.Infrastructure\Inv.Infrastructure.csproj" />
+      <ProjectReference Include="..\Inv.ServiceDefaults\Inv.ServiceDefaults.csproj" />
     </ItemGroup>
 
 </Project>

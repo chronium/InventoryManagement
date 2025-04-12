@@ -4,12 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inv.Infrastructure;
 
-public class WarehouseDbContext : DbContext
+public class WarehouseContext(DbContextOptions<WarehouseContext> options) : DbContext(options)
 {
-    public WarehouseDbContext(DbContextOptions<WarehouseDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<Warehouse> Warehouses { get; set; }
     public DbSet<Item> Items { get; set; }
     public DbSet<StockItem> StockItems { get; set; }
@@ -17,7 +13,7 @@ public class WarehouseDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var warehouseEntity = modelBuilder.Entity<Warehouse>();
-        
+
         warehouseEntity.HasKey(w => w.Id);
         warehouseEntity.Property(w => w.Name)
             .IsRequired()
@@ -30,20 +26,25 @@ public class WarehouseDbContext : DbContext
             .HasConversion<WarehouseIdValueConverter>();
 
         var itemEntity = modelBuilder.Entity<Item>();
-        
+
         itemEntity.HasKey(i => i.Id);
         itemEntity.Property(i => i.Name)
             .IsRequired()
             .HasMaxLength(100);
         itemEntity.HasIndex(i => i.Name)
             .IsUnique();
+        itemEntity.Property(i => i.Sku)
+            .IsRequired()
+            .HasMaxLength(50);
+        itemEntity.HasIndex(i => i.Sku)
+            .IsUnique();
         itemEntity.Property(i => i.Id)
             .ValueGeneratedOnAdd();
         itemEntity.Property(i => i.Id)
             .HasConversion<ItemIdValueConverter>();
-        
+
         var stockItemEntity = modelBuilder.Entity<StockItem>();
-        
+
         stockItemEntity.HasKey(si => si.Id);
         stockItemEntity.Property(si => si.Quantity)
             .IsRequired();

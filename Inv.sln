@@ -10,6 +10,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inv.Application", "Inv.Appl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inv.Infrastructure", "Inv.Infrastructure\Inv.Infrastructure.csproj", "{D3955C81-D7CC-4127-B6F5-42DAF4CFA42A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inv.ServiceDefaults", "Inv.ServiceDefaults\Inv.ServiceDefaults.csproj", "{FA5580F0-DAAC-4648-81F8-E09E3542114D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inv.MigrationService", "Inv.MigrationService\Inv.MigrationService.csproj", "{30454CBF-633F-463B-80A3-10852481799D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{D3955C81-D7CC-4127-B6F5-42DAF4CFA42A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3955C81-D7CC-4127-B6F5-42DAF4CFA42A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3955C81-D7CC-4127-B6F5-42DAF4CFA42A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA5580F0-DAAC-4648-81F8-E09E3542114D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA5580F0-DAAC-4648-81F8-E09E3542114D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA5580F0-DAAC-4648-81F8-E09E3542114D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA5580F0-DAAC-4648-81F8-E09E3542114D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30454CBF-633F-463B-80A3-10852481799D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30454CBF-633F-463B-80A3-10852481799D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30454CBF-633F-463B-80A3-10852481799D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30454CBF-633F-463B-80A3-10852481799D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
