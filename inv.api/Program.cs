@@ -26,7 +26,9 @@ builder.Services.AddDbContext<WarehouseContext>(options =>
         x => x.MigrationsAssembly(typeof(WarehouseContext).Assembly));
 
     if (builder.Environment.IsDevelopment())
-        options.LogTo(Console.WriteLine);
+    {
+        options.LogTo(Console.WriteLine, [DbLoggerCategory.Database.Command.Name]);
+    }
 });
 
 builder.Services.AddInfrastructure();

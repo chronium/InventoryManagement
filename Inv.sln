@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inv", "Inv\Inv.csproj", "{461F8358-1A50-4A32-855F-5B3DB5868AD0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inv.AppHost", "Inv.AppHost\Inv.AppHost.csproj", "{461F8358-1A50-4A32-855F-5B3DB5868AD0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inv.API", "Inv.API\Inv.API.csproj", "{BFF14CC5-76AC-461A-9EA1-7B2CBF5174F8}"
 EndProject

@@ -9,8 +9,7 @@
         <Nullable>enable</Nullable>
         <IsAspireHost>true</IsAspireHost>
         <UserSecretsId>e2b5569e-7fdf-42bf-bf8b-ac2b93edfe33</UserSecretsId>
-        <AssemblyName>Inv</AssemblyName>
-        <RootNamespace>Inv</RootNamespace>
+        <PackageId>Inv.AppHost</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
