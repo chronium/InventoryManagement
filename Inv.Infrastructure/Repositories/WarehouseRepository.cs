@@ -23,7 +23,8 @@ public class WarehouseRepository(WarehouseContext dbContext) : IWarehouseReposit
 
     public Task AddAsync(Warehouse warehouse, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        dbContext.Warehouses.Add(warehouse);
+        return Task.CompletedTask;
     }
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)

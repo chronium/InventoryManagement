@@ -9,7 +9,8 @@ public class ItemRepository(WarehouseContext dbContext) : IItemRepository
 {
     public Task<Item?> GetByIdAsync(ItemId id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return dbContext.Items
+            .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
     }
 
     public Task<List<Item>> GetAllAsync(CancellationToken cancellationToken)
@@ -21,7 +22,8 @@ public class ItemRepository(WarehouseContext dbContext) : IItemRepository
 
     public Task AddAsync(Item item, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        dbContext.Items.Add(item);
+        return Task.CompletedTask;
     }
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)

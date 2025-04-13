@@ -1,8 +1,10 @@
+using Inv.Domain.Entities.IdTypes;
+
 namespace Inv.Application.Queries;
 
 public record GetAllWarehousesQuery;
 
-public record GetWarehouseByIdQuery(Guid Id);
+public record GetWarehouseByIdQuery(WarehouseId Id);
 
 public record WarehouseDto(Guid Id, string Name);
 
