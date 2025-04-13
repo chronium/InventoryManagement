@@ -27,14 +27,8 @@ public class StockItem(WarehouseId warehouseId, ItemId itemId, ItemInfo itemInfo
     }
 }
 
-public class ItemInfo
+public class ItemInfo(string sku, string name)
 {
-    public ItemInfo(string sku, string name)
-    {
-        Sku = sku;
-        Name = name;
-    }
-
-    public string Sku { get; private set; }
-    public string Name { get; private set; }
+    public string Sku { get; private set; } = sku;
+    public string Name { get; private set; } = name;
 }

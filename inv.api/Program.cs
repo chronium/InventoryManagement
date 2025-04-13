@@ -15,6 +15,8 @@ builder.Services.AddDbContext<WarehouseContext>(options =>
         x => x.MigrationsAssembly(typeof(WarehouseContext).Assembly));
 });
 
+builder.Services.AddInfrastructure();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
