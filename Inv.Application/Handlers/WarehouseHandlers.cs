@@ -28,7 +28,8 @@ public class GetWarehouseByIdHandler(IWarehouseRepository repository)
             (Guid)warehouse.Id,
             warehouse.Name,
             warehouse.Inventory
-                .Select(i => new InventoryItemDto((Guid)i.ItemId, i.ItemInfo.Sku, i.ItemInfo.Name, i.Quantity))
+                .Select(i =>
+                    new InventoryItemDto((Guid)i.ItemId, (string)i.ItemInfo.Sku, (string)i.ItemInfo.Name, i.Quantity))
                 .ToList());
     }
 }

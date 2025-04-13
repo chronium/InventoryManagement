@@ -1,4 +1,5 @@
 using Inv.Domain.Entities.IdTypes;
+using Inv.Domain.ValueObjects;
 
 namespace Inv.Domain.Entities;
 
@@ -32,13 +33,13 @@ public class StockItem(WarehouseId warehouseId, ItemId itemId, ItemInfo itemInfo
     }
 }
 
-public class ItemInfo(string sku, string name)
+public class ItemInfo(ItemSku sku, ItemName name)
 {
     public ItemInfo()
-        : this(string.Empty, string.Empty)
+        : this(new(), new())
     {
     }
 
-    public string Sku { get; private set; } = sku;
-    public string Name { get; private set; } = name;
+    public ItemSku Sku { get; private set; } = sku;
+    public ItemName Name { get; private set; } = name;
 }

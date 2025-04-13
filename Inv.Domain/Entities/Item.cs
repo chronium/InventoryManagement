@@ -1,11 +1,12 @@
 using Inv.Domain.Entities.IdTypes;
+using Inv.Domain.ValueObjects;
 
 namespace Inv.Domain.Entities;
 
-public class Item(string sku, string name)
+public class Item(ItemSku sku, ItemName name)
 {
     public ItemId Id { get; private set; }
 
-    public string Sku { get; private set; } = sku;
-    public string Name { get; private set; } = name;
+    public ItemSku Sku { get; private set; } = sku;
+    public ItemName Name { get; private set; } = name;
 }

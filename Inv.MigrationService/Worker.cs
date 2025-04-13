@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Bogus;
 using Inv.Domain.Entities;
+using Inv.Domain.ValueObjects;
 using Inv.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Trace;
@@ -50,7 +51,7 @@ public class Worker(
         var randomizer = new Randomizer();
 
         var testItems = new Faker<Item>()
-            .CustomInstantiator(f => new(f.Commerce.Ean13(), f.Commerce.ProductName()))
+            .CustomInstantiator(f => new((ItemSku)f.Commerce.Ean13(), (ItemName)f.Commerce.ProductName()))
             .Generate(10);
         await dbContext.Items.AddRangeAsync(testItems, cancellationToken);
 

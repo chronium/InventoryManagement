@@ -15,11 +15,13 @@ public class WarehouseContext(DbContextOptions<WarehouseContext> options) : DbCo
         modelBuilder.Entity<Warehouse>(b =>
         {
             b.HasKey(w => w.Id);
+            
             b.Property(w => w.Name)
                 .IsRequired()
                 .HasMaxLength(100);
             b.HasIndex(w => w.Name)
                 .IsUnique();
+            
             b.Property(w => w.Id)
                 .ValueGeneratedOnAdd();
             b.Property(w => w.Id)
@@ -36,16 +38,23 @@ public class WarehouseContext(DbContextOptions<WarehouseContext> options) : DbCo
         modelBuilder.Entity<Item>(b =>
         {
             b.HasKey(i => i.Id);
+            
             b.Property(i => i.Name)
                 .IsRequired()
                 .HasMaxLength(100);
             b.HasIndex(i => i.Name)
                 .IsUnique();
+            b.Property(i => i.Name)
+                .HasConversion<ItemNameValueConverter>();
+
             b.Property(i => i.Sku)
                 .IsRequired()
                 .HasMaxLength(50);
             b.HasIndex(i => i.Sku)
                 .IsUnique();
+            b.Property(i => i.Sku)
+                .HasConversion<ItemSkuValueConverter>();
+
             b.Property(i => i.Id)
                 .ValueGeneratedOnAdd();
             b.Property(i => i.Id)
@@ -55,16 +64,21 @@ public class WarehouseContext(DbContextOptions<WarehouseContext> options) : DbCo
         modelBuilder.Entity<StockItem>(b =>
         {
             b.HasKey(si => si.Id);
+            
             b.Property(si => si.Quantity)
                 .IsRequired();
+            
             b.HasIndex(si => new { si.WarehouseId, si.ItemId })
                 .IsUnique();
+            
             b.Property(si => si.Id)
                 .ValueGeneratedOnAdd();
             b.Property(si => si.Id)
                 .HasConversion<StockItemIdValueConverter>();
+            
             b.Property(si => si.WarehouseId)
                 .HasConversion<WarehouseIdValueConverter>();
+            
             b.Property(si => si.ItemId)
                 .HasConversion<ItemIdValueConverter>();
 
@@ -73,9 +87,14 @@ public class WarehouseContext(DbContextOptions<WarehouseContext> options) : DbCo
                 ii.Property(i => i.Sku)
                     .IsRequired()
                     .HasMaxLength(50);
+                ii.Property(i => i.Sku)
+                    .HasConversion<ItemSkuValueConverter>();
+
                 ii.Property(i => i.Name)
                     .IsRequired()
                     .HasMaxLength(100);
+                ii.Property(i => i.Name)
+                    .HasConversion<ItemNameValueConverter>();
             });
         });
     }
