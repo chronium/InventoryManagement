@@ -14,4 +14,8 @@ var api = builder.AddProject<Inv_API>("api")
     .WaitFor(db)
     .WaitForCompletion(migrationService);
 
+var ui = builder.AddProject<Inv_UI>("ui")
+    .WithReference(api)
+    .WaitFor(api);
+
 builder.Build().Run();

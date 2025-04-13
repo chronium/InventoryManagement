@@ -2,7 +2,6 @@ using Inv.Application.Commands;
 using Inv.Application.Interfaces;
 using Inv.Application.Queries;
 using Inv.Domain.Entities;
-using Inv.Domain.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Inv.Application.Handlers;
@@ -20,7 +19,7 @@ public class CreateItemHandler(IItemRepository repository)
 {
     public async Task<ItemDto> Handle(CreateItemCommand request, CancellationToken cancellationToken)
     {
-        var item = new Item((ItemSku)request.Sku, (ItemName)request.Name);
+        var item = new Item(request.Sku, request.Name);
         await repository.AddAsync(item, cancellationToken);
         await repository.SaveChangesAsync(cancellationToken);
 

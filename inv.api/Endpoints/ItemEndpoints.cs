@@ -1,6 +1,8 @@
 using Inv.Application.Commands;
 using Inv.Application.Handlers;
 using Inv.Application.Queries;
+using Inv.Application.Shared.CommandDtos;
+using Inv.Domain.ValueObjects;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,10 +26,10 @@ public static class ItemEndpoints
 
     private static async Task<CreatedAtRoute<ItemDto>> CreateItemAsync(
         [FromServices] CreateItemHandler handler,
-        [FromBody] CreateItemCommand command,
+        [FromBody] CreateItemDto command,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(new(command.Sku, command.Name), cancellationToken);
+        var result = await handler.Handle(new((ItemSku)command.Sku, (ItemName)command.Name), cancellationToken);
         return TypedResults.CreatedAtRoute(result, nameof(GetAllItemsAsync), new { id = result.Id });
     }
 }

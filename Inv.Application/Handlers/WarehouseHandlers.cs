@@ -1,8 +1,8 @@
 using Inv.Application.Commands;
 using Inv.Application.Interfaces;
 using Inv.Application.Queries;
+using Inv.Application.Shared.QueryDtos;
 using Inv.Domain.Entities;
-using Inv.Domain.Entities.IdTypes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Inv.Application.Handlers;
@@ -50,10 +50,10 @@ public class AddStockHandler(IWarehouseRepository warehouseRepository, IItemRepo
 {
     public async Task Handle(AddStockCommand request, CancellationToken cancellationToken)
     {
-        var warehouse = await warehouseRepository.GetByIdAsync((WarehouseId)request.WarehouseId, cancellationToken);
+        var warehouse = await warehouseRepository.GetByIdAsync(request.WarehouseId, cancellationToken);
         if (warehouse is null) throw new("Warehouse not found");
 
-        var item = await itemRepository.GetByIdAsync((ItemId)request.ItemId, cancellationToken);
+        var item = await itemRepository.GetByIdAsync(request.ItemId, cancellationToken);
         if (item is null) throw new("Item not found");
 
         warehouse.AddStock(item.Id, new(item.Sku, item.Name), request.Quantity);
@@ -66,18 +66,18 @@ public class MoveStockHandler(IWarehouseRepository warehouseRepository, IItemRep
     public async Task Handle(MoveStockCommand request, CancellationToken cancellationToken)
     {
         var sourceWarehouse =
-            await warehouseRepository.GetByIdAsync((WarehouseId)request.SourceWarehouseId, cancellationToken);
+            await warehouseRepository.GetByIdAsync(request.SourceWarehouseId, cancellationToken);
         if (sourceWarehouse is null) throw new("Source warehouse not found");
 
         var destinationWarehouse =
-            await warehouseRepository.GetByIdAsync((WarehouseId)request.DestinationWarehouseId, cancellationToken);
+            await warehouseRepository.GetByIdAsync(request.DestinationWarehouseId, cancellationToken);
         if (destinationWarehouse is null) throw new("Destination warehouse not found");
 
-        var item = await itemRepository.GetByIdAsync((ItemId)request.ItemId, cancellationToken);
+        var item = await itemRepository.GetByIdAsync(request.ItemId, cancellationToken);
         if (item is null) throw new("Item not found");
 
-        sourceWarehouse.RemoveStock((ItemId)request.ItemId, request.Quantity);
-        destinationWarehouse.AddStock((ItemId)request.ItemId, new(item.Sku, item.Name), request.Quantity);
+        sourceWarehouse.RemoveStock(request.ItemId, request.Quantity);
+        destinationWarehouse.AddStock(request.ItemId, new(item.Sku, item.Name), request.Quantity);
 
         await warehouseRepository.SaveChangesAsync(cancellationToken);
     }
