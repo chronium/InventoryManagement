@@ -1,6 +1,8 @@
 using Inv.Application.Commands;
 using Inv.Application.Handlers;
 using Inv.Application.Queries;
+using Inv.Application.Shared.CommandDtos;
+using Inv.Application.Shared.QueryDtos;
 using Inv.Domain.Entities.IdTypes;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +40,7 @@ public static class WarehouseEndpoints
 
     private static async Task<CreatedAtRoute<WarehouseDto>> CreateWarehouseAsync(
         [FromServices] CreateWarehouseHandler handler,
-        [FromBody] CreateWarehouseCommand command,
+        [FromBody] CreateWarehouseDto command,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(new(command.Name), cancellationToken);
@@ -51,7 +53,7 @@ public static class WarehouseEndpoints
         [FromBody] AddStockDto command,
         CancellationToken cancellationToken)
     {
-        await handler.Handle(new(id, command.ItemId, command.Quantity), cancellationToken);
+        await handler.Handle(new((WarehouseId)id, (ItemId)command.ItemId, command.Quantity), cancellationToken);
         return TypedResults.NoContent();
     }
     
@@ -61,7 +63,7 @@ public static class WarehouseEndpoints
         [FromBody] MoveStockDto command,
         CancellationToken cancellationToken)
     {
-        await handler.Handle(new(id, command.DestinationWarehouseId, command.ItemId, command.Quantity), cancellationToken);
+        await handler.Handle(new((WarehouseId)id, (WarehouseId)command.DestinationWarehouseId, (ItemId)command.ItemId, command.Quantity), cancellationToken);
         return TypedResults.NoContent();
     }
 }

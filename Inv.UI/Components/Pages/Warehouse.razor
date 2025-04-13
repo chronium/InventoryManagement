@@ -1,0 +1,30 @@
+@page "/warehouses/{warehouseId:guid}"
+@using Inv.Application.Shared.QueryDtos
+@using Inv.UI.Services
+@inject WarehouseApiClient WarehouseApi
+@inject NavigationManager NavigationManager
+
+<h3>WarehouseStock</h3>
+
+<FluentDataGrid ItemsProvider="@inventoryProvider">
+    <PropertyColumn Property="@(i => i.Id)"/>
+    <PropertyColumn Property="@(i => i.Name)"/>
+    <PropertyColumn Property="@(i => i.Quantity)"/>
+</FluentDataGrid>
+
+@code {
+    WarehouseWithInventoryDto? warehouseWithInventory;
+
+    [Parameter]
+    public Guid warehouseId { get; set; }
+
+    GridItemsProvider<InventoryItemDto> inventoryProvider = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        warehouseWithInventory = await WarehouseApi.GetWarehouseAsync(warehouseId);
+
+        inventoryProvider = req => ValueTask.FromResult(GridItemsProviderResult.From(warehouseWithInventory.Inventory, warehouseWithInventory.Inventory.Count));
+    }
+
+}

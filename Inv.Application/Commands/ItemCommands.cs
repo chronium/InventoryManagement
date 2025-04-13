@@ -1,3 +1,5 @@
+using Inv.Domain.ValueObjects;
+
 namespace Inv.Application.Commands;
 
-public record CreateItemCommand(string Sku, string Name);
+public record CreateItemCommand(ItemSku Sku, ItemName Name);

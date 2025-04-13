@@ -1,0 +1,44 @@
+@page "/warehouses"
+@using Inv.Application.Shared.QueryDtos
+@using Inv.UI.Services
+
+@inject NavigationManager NavigationManager
+
+@inject WarehouseApiClient WarehouseApi
+
+@rendermode InteractiveServer
+
+<h3>Warehouses</h3>
+
+<FluentDataGrid ItemsProvider="@warehouseProvider">
+    <PropertyColumn Property="@(w => w.Id)"/>
+    <PropertyColumn Property="@(w => w.Name)"/>
+    <TemplateColumn>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@(() => ViewWarehouse(context))">
+            View
+        </FluentButton>
+    </TemplateColumn>
+</FluentDataGrid>
+
+@code {
+    GridItemsProvider<WarehouseDto> warehouseProvider = default!;
+
+    protected override Task OnInitializedAsync()
+    {
+        warehouseProvider = async req =>
+        {
+            var warehouses = await WarehouseApi.GetAllWarehousesAsync(req.CancellationToken);
+
+            return GridItemsProviderResult.From(
+                warehouses, warehouses.Count);
+        };
+
+        return Task.CompletedTask;
+    }
+
+    private void ViewWarehouse(WarehouseDto warehouse)
+    {
+        NavigationManager.NavigateTo($"/warehouses/{warehouse.Id}");
+    }
+
+}
