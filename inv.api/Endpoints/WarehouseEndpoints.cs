@@ -15,6 +15,7 @@ public static class WarehouseEndpoints
         group.MapGet("/{id:guid}", GetWarehouseByIdAsync).WithName(nameof(GetWarehouseByIdAsync));
         group.MapPost("/", CreateWarehouseAsync).WithName(nameof(CreateWarehouseAsync));
         group.MapPost("/{id:guid}/stock", AddStockAsync).WithName(nameof(AddStockAsync));
+        group.MapPost("/{id:guid}/move-stock", MoveStockAsync).WithName(nameof(MoveStockAsync));
 
         return group;
     }
@@ -51,6 +52,16 @@ public static class WarehouseEndpoints
         CancellationToken cancellationToken)
     {
         await handler.Handle(new(id, command.ItemId, command.Quantity), cancellationToken);
+        return TypedResults.NoContent();
+    }
+    
+    private static async Task<NoContent> MoveStockAsync(
+        [FromServices] MoveStockHandler handler,
+        [FromRoute] Guid id,
+        [FromBody] MoveStockDto command,
+        CancellationToken cancellationToken)
+    {
+        await handler.Handle(new(id, command.DestinationWarehouseId, command.ItemId, command.Quantity), cancellationToken);
         return TypedResults.NoContent();
     }
 }

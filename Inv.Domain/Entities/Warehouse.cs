@@ -27,5 +27,8 @@ public class Warehouse(string name)
             throw new InvalidOperationException("Not enough stock to remove.");
 
         existingStockItem.Decrease(quantity);
+
+        if (existingStockItem.Quantity == 0)
+            _inventory.Remove(existingStockItem);
     }
 }

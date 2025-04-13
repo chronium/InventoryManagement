@@ -61,6 +61,28 @@ public class AddStockHandler(IWarehouseRepository warehouseRepository, IItemRepo
     }
 }
 
+public class MoveStockHandler(IWarehouseRepository warehouseRepository, IItemRepository itemRepository)
+{
+    public async Task Handle(MoveStockCommand request, CancellationToken cancellationToken)
+    {
+        var sourceWarehouse =
+            await warehouseRepository.GetByIdAsync((WarehouseId)request.SourceWarehouseId, cancellationToken);
+        if (sourceWarehouse is null) throw new("Source warehouse not found");
+
+        var destinationWarehouse =
+            await warehouseRepository.GetByIdAsync((WarehouseId)request.DestinationWarehouseId, cancellationToken);
+        if (destinationWarehouse is null) throw new("Destination warehouse not found");
+
+        var item = await itemRepository.GetByIdAsync((ItemId)request.ItemId, cancellationToken);
+        if (item is null) throw new("Item not found");
+
+        sourceWarehouse.RemoveStock((ItemId)request.ItemId, request.Quantity);
+        destinationWarehouse.AddStock((ItemId)request.ItemId, new(item.Sku, item.Name), request.Quantity);
+
+        await warehouseRepository.SaveChangesAsync(cancellationToken);
+    }
+}
+
 public static class WarehouseHandlerExtensions
 {
     public static IServiceCollection AddWarehouseHandlers(this IServiceCollection services)
@@ -69,6 +91,7 @@ public static class WarehouseHandlerExtensions
         services.AddScoped<GetWarehouseByIdHandler>();
         services.AddScoped<CreateWarehouseHandler>();
         services.AddScoped<AddStockHandler>();
+        services.AddScoped<MoveStockHandler>();
 
         return services;
     }
