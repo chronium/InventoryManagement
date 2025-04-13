@@ -1,0 +1,55 @@
+@page "/items"
+@using Inv.Application.Shared.QueryDtos
+@using Inv.UI.Components.Dialogs
+@using Inv.UI.Services
+
+@inject ItemApiClient ItemApi
+
+@inject IDialogService DialogService
+
+@rendermode InteractiveServer
+
+<h3>Items</h3>
+
+<FluentButton Appearance="Appearance.Accent" OnClick="@(OpenAddItem)">
+    Add Item
+</FluentButton>
+
+<FluentDataGrid ItemsProvider="@itemsProvider" @ref="dataGridRef">
+    <PropertyColumn Property="@(i => i.Sku)"/>
+    <PropertyColumn Property="@(i => i.Name)"/>
+</FluentDataGrid>
+
+@code {
+    GridItemsProvider<ItemDto> itemsProvider = default!;
+    FluentDataGrid<ItemDto>? dataGridRef;
+
+    protected override Task OnInitializedAsync()
+    {
+        itemsProvider = async req =>
+        {
+            var items = await ItemApi.GetAllItemsAsync(req.CancellationToken);
+
+            return GridItemsProviderResult.From(
+                items, items.Count);
+        };
+
+        return Task.CompletedTask;
+    }
+
+    private Task OpenAddItem()
+    {
+        return DialogService.ShowDialogAsync<CreateItem>(new()
+        {
+            Title = "Add Item",
+            PreventDismissOnOverlayClick = true,
+            OnDialogResult = DialogService.CreateDialogCallback(this, async result =>
+            {
+                if (result.Cancelled)
+                    return;
+                await dataGridRef!.RefreshDataAsync();
+            }),
+        });
+    }
+
+}

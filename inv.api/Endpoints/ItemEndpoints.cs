@@ -1,7 +1,6 @@
-using Inv.Application.Commands;
 using Inv.Application.Handlers;
-using Inv.Application.Queries;
 using Inv.Application.Shared.CommandDtos;
+using Inv.Application.Shared.QueryDtos;
 using Inv.Domain.ValueObjects;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

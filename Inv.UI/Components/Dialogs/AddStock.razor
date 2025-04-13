@@ -1,0 +1,73 @@
+@using Inv.Application.Shared.QueryDtos
+@using Inv.UI.Services
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@implements IDialogContentComponent<Guid>
+
+@inject WarehouseApiClient WarehouseApi
+@inject ItemApiClient ItemApi
+
+@rendermode InteractiveServer
+
+@* Header *@
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentIcon Value="@(new Size24.WindowApps())"/>
+        <FluentLabel Typo="Typography.PaneHeader">
+            @Dialog.Instance.Parameters.Title
+        </FluentLabel>
+    </FluentStack>
+</FluentDialogHeader>
+
+@* Footer *@
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync"
+                  Disabled="@(selectedItem is null || !quantity.HasValue)">Save
+    </FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" OnClick="@CancelAsync">Cancel</FluentButton>
+</FluentDialogFooter>
+
+@* Body *@
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentCombobox Items="@items"
+                        Autocomplete="ComboboxAutocomplete.Both"
+                        OptionValue="@(i => i.Id.ToString())"
+                        OptionText="@(i => i.Name)"
+                        @bind-SelectedOption="@selectedItem"
+                        Label="Item"/>
+        <FluentNumberField @bind-Value="@quantity" Label="Quantity"></FluentNumberField>
+    </FluentStack>
+</FluentDialogBody>
+
+@code {
+    [CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+
+    [Parameter] public Guid Content { get; set; }
+
+    List<ItemDto> items = [];
+
+    ItemDto? selectedItem;
+    int? quantity;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ItemApi.GetAllItemsAsync();
+    }
+
+    private async Task SaveAsync()
+    {
+        if (selectedItem is null || !quantity.HasValue)
+            return;
+
+        var warehouseId = Content;
+
+        await WarehouseApi.AddStock(warehouseId, new(selectedItem.Id, quantity.Value));
+        await Dialog.CloseAsync();
+    }
+
+    private async Task CancelAsync()
+    {
+        await Dialog.CancelAsync();
+    }
+
+}

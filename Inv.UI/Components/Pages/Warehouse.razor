@@ -1,30 +1,79 @@
 @page "/warehouses/{warehouseId:guid}"
 @using Inv.Application.Shared.QueryDtos
+@using Inv.UI.Components.Dialogs
+@using Inv.UI.Models
 @using Inv.UI.Services
 @inject WarehouseApiClient WarehouseApi
-@inject NavigationManager NavigationManager
+@inject IDialogService DialogService
 
-<h3>WarehouseStock</h3>
+@rendermode InteractiveServer
 
-<FluentDataGrid ItemsProvider="@inventoryProvider">
-    <PropertyColumn Property="@(i => i.Id)"/>
+<h3>@warehouse?.Name - Stock</h3>
+
+<FluentButton Appearance="Appearance.Accent" OnClick="@(OpenAddStock)">
+    Add Stock
+</FluentButton>
+
+<FluentDataGrid ItemsProvider="@inventoryProvider" @ref="dataGridRef">
+    <PropertyColumn Property="@(i => i.Sku)"/>
     <PropertyColumn Property="@(i => i.Name)"/>
     <PropertyColumn Property="@(i => i.Quantity)"/>
+    <TemplateColumn>
+        <FluentButton Appearance="Appearance.Accent" OnClick="@(() => MoveStock(context))">
+            Move Stock
+        </FluentButton>
+    </TemplateColumn>
 </FluentDataGrid>
 
 @code {
-    WarehouseWithInventoryDto? warehouseWithInventory;
+    [Parameter] public Guid warehouseId { get; set; }
 
-    [Parameter]
-    public Guid warehouseId { get; set; }
+    WarehouseWithInventoryDto? warehouse { get; set; }
 
     GridItemsProvider<InventoryItemDto> inventoryProvider = default!;
+    FluentDataGrid<InventoryItemDto>? dataGridRef;
 
     protected override async Task OnInitializedAsync()
     {
-        warehouseWithInventory = await WarehouseApi.GetWarehouseAsync(warehouseId);
+        warehouse = await WarehouseApi.GetWarehouseAsync(warehouseId);
 
-        inventoryProvider = req => ValueTask.FromResult(GridItemsProviderResult.From(warehouseWithInventory.Inventory, warehouseWithInventory.Inventory.Count));
+        inventoryProvider = async req =>
+        {
+            var warehouseWithInventory = await WarehouseApi.GetWarehouseAsync(warehouseId, req.CancellationToken);
+
+            return GridItemsProviderResult.From(warehouseWithInventory.Inventory, warehouseWithInventory.Inventory.Count);
+        };
+    }
+
+    private Task OpenAddStock()
+    {
+        return DialogService.ShowDialogAsync<AddStock>(warehouseId, new()
+        {
+            Title = "Add Stock",
+            PreventDismissOnOverlayClick = true,
+            OnDialogResult = DialogService.CreateDialogCallback(this, async result =>
+            {
+                if (result.Cancelled)
+                    return;
+                await dataGridRef!.RefreshDataAsync();
+            }),
+        });
+    }
+
+    private Task MoveStock(InventoryItemDto item)
+    {
+        return DialogService.ShowDialogAsync<MoveStock>(new MoveStockModel(warehouseId, item)
+            , new()
+            {
+                Title = "Move Stock",
+                PreventDismissOnOverlayClick = true,
+                OnDialogResult = DialogService.CreateDialogCallback(this, async result =>
+                {
+                    if (result.Cancelled)
+                        return;
+                    await dataGridRef!.RefreshDataAsync();
+                }),
+            });
     }
 
 }

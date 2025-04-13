@@ -1,8 +1,10 @@
-@page "/warehouses"
+@page "/"
 @using Inv.Application.Shared.QueryDtos
+@using Inv.UI.Components.Dialogs
 @using Inv.UI.Services
 
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
 
 @inject WarehouseApiClient WarehouseApi
 
@@ -10,8 +12,11 @@
 
 <h3>Warehouses</h3>
 
-<FluentDataGrid ItemsProvider="@warehouseProvider">
-    <PropertyColumn Property="@(w => w.Id)"/>
+<FluentButton Appearance="Appearance.Accent" OnClick="@(OpenAddWarehouse)">
+    Add Warehouse
+</FluentButton>
+
+<FluentDataGrid ItemsProvider="@warehouseProvider" @ref="dataGridRef">
     <PropertyColumn Property="@(w => w.Name)"/>
     <TemplateColumn>
         <FluentButton Appearance="Appearance.Accent" OnClick="@(() => ViewWarehouse(context))">
@@ -22,6 +27,7 @@
 
 @code {
     GridItemsProvider<WarehouseDto> warehouseProvider = default!;
+    FluentDataGrid<WarehouseDto> dataGridRef = default!;
 
     protected override Task OnInitializedAsync()
     {
@@ -39,6 +45,21 @@
     private void ViewWarehouse(WarehouseDto warehouse)
     {
         NavigationManager.NavigateTo($"/warehouses/{warehouse.Id}");
+    }
+
+    private Task OpenAddWarehouse()
+    {
+        return DialogService.ShowDialogAsync<CreateWarehouse>(new()
+        {
+            Title = "Add Warehouse",
+            PreventDismissOnOverlayClick = true,
+            OnDialogResult = DialogService.CreateDialogCallback(this, async result =>
+            {
+                if (result.Cancelled)
+                    return;
+                await dataGridRef!.RefreshDataAsync();
+            }),
+        });
     }
 
 }

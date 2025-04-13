@@ -14,6 +14,11 @@ builder.Services.AddHttpClient<WarehouseApiClient>(client =>
     client.BaseAddress = new(builder.Configuration["services:api:http:0"]!);
 });
 
+builder.Services.AddHttpClient<ItemApiClient>(client =>
+{
+    client.BaseAddress = new(builder.Configuration["services:api:http:0"]!);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

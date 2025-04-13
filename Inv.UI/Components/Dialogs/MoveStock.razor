@@ -1,0 +1,80 @@
+@using Inv.Application.Shared.QueryDtos
+@using Inv.UI.Models
+@using Inv.UI.Services
+@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
+@implements IDialogContentComponent<MoveStockModel>
+
+@inject WarehouseApiClient WarehouseApi
+
+@rendermode InteractiveServer
+
+@* Header *@
+<FluentDialogHeader ShowDismiss="true">
+    <FluentStack VerticalAlignment="VerticalAlignment.Center">
+        <FluentStack Orientation="Orientation.Vertical">
+            <FluentStack Orientation="Orientation.Horizontal">
+                <FluentIcon Value="@(new Size24.WindowApps())"/>
+                <FluentLabel Typo="Typography.PaneHeader">
+                    @Dialog.Instance.Parameters.Title
+                </FluentLabel>
+            </FluentStack>
+            <FluentLabel Typo="Typography.H5">
+                Moving @Content.Item.Name
+            </FluentLabel>
+        </FluentStack>
+    </FluentStack>
+</FluentDialogHeader>
+
+@* Footer *@
+<FluentDialogFooter>
+    <FluentButton Appearance="Appearance.Accent" OnClick="@SaveAsync"
+                  Disabled="@(selectedWarehouse is null || !quantity.HasValue || quantity > Content.Item.Quantity)">Save
+    </FluentButton>
+    <FluentButton Appearance="Appearance.Neutral" OnClick="@CancelAsync">Cancel</FluentButton>
+</FluentDialogFooter>
+
+@* Body *@
+<FluentDialogBody>
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentCombobox Items="@warehouses"
+                        Autocomplete="ComboboxAutocomplete.Both"
+                        OptionValue="@(i => i.Id.ToString())"
+                        OptionText="@(i => i.Name)"
+                        @bind-SelectedOption="@selectedWarehouse"
+                        Label="Destination Warehouse"/>
+        <FluentNumberField @bind-Value="@quantity" Label="Quantity"
+                           Max="@(Content.Item.Quantity.ToString())"></FluentNumberField>
+    </FluentStack>
+</FluentDialogBody>
+
+
+@code {
+    [CascadingParameter] public FluentDialog Dialog { get; set; } = default!;
+
+    [Parameter] public MoveStockModel Content { get; set; }
+
+    List<WarehouseDto> warehouses = [];
+
+    WarehouseDto? selectedWarehouse;
+    int? quantity;
+
+    protected override async Task OnInitializedAsync()
+    {
+        warehouses = (await WarehouseApi.GetAllWarehousesAsync()).Where(w => w.Id != Content.SourceWarehouseId).ToList();
+    }
+
+    private async Task SaveAsync()
+    {
+        if (selectedWarehouse is null || !quantity.HasValue || quantity > Content.Item.Quantity)
+            return;
+
+        await WarehouseApi.MoveStock(Content.SourceWarehouseId, new(selectedWarehouse.Id, Content.Item.Id, quantity.Value));
+        await Dialog.CloseAsync();
+    }
+
+    private async Task CancelAsync()
+    {
+        await Dialog.CancelAsync();
+    }
+
+}

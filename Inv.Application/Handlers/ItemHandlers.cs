@@ -1,6 +1,7 @@
 using Inv.Application.Commands;
 using Inv.Application.Interfaces;
 using Inv.Application.Queries;
+using Inv.Application.Shared.QueryDtos;
 using Inv.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 

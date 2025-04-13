@@ -1,6 +1,4 @@
 ﻿@using Microsoft.FluentUI.AspNetCore.Components.Icons.Regular
-@rendermode InteractiveServer
-
 <div class="navmenu">
     <input type="checkbox" title="Menu expand/collapse toggle" id="navmenu-toggle" class="navmenu-icon"/>
     <label for="navmenu-toggle" class="navmenu-icon">
@@ -9,17 +7,11 @@
     <nav class="sitenav" aria-labelledby="main-menu">
         <FluentNavMenu Id="main-menu" Collapsible="true" Width="250" Title="Navigation menu" @bind-Expanded="expanded"
                        CustomToggle="true">
-            <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Size20.Home())"
-                           IconColor="Color.Accent">Home
-            </FluentNavLink>
-            <FluentNavLink Href="counter" Icon="@(new Size20.NumberSymbolSquare())"
-                           IconColor="Color.Accent">Counter
-            </FluentNavLink>
-            <FluentNavLink Href="weather" Icon="@(new Size20.WeatherPartlyCloudyDay())"
-                           IconColor="Color.Accent">Weather
-            </FluentNavLink>
-            <FluentNavLink Href="warehouses" Icon="@(new Size20.WeatherPartlyCloudyDay())"
+            <FluentNavLink Href="/" Icon="@(new Size20.Home())"
                            IconColor="Color.Accent">Warehouses
+            </FluentNavLink>
+            <FluentNavLink Href="items" Icon="@(new Size20.Tag())"
+                           IconColor="Color.Accent">Items
             </FluentNavLink>
         </FluentNavMenu>
     </nav>
