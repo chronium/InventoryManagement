@@ -26,6 +26,6 @@ public class ItemRepository(WarehouseContext dbContext) : IItemRepository
 
     public Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return dbContext.SaveChangesAsync(cancellationToken);
     }
 }
