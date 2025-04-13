@@ -2,19 +2,26 @@ using Inv.Domain.Entities.IdTypes;
 
 namespace Inv.Domain.Entities;
 
-public class StockItem
+public class StockItem(WarehouseId warehouseId, ItemId itemId, ItemInfo itemInfo, int quantity)
 {
-    public StockItem(WarehouseId warehouseId, ItemId itemId, int quantity)
+    public StockItemId Id { get; private set; }
+
+    public WarehouseId WarehouseId { get; private set; } = warehouseId;
+    public ItemId ItemId { get; private set; } = itemId;
+
+    public int Quantity { get; private set; } = quantity;
+
+    public ItemInfo ItemInfo { get; private set; } = itemInfo;
+}
+
+public class ItemInfo
+{
+    public ItemInfo(string sku, string name)
     {
-        WarehouseId = warehouseId;
-        ItemId = itemId;
-        Quantity = quantity;
+        Sku = sku;
+        Name = name;
     }
 
-    public StockItemId Id { get; private set; }
-    
-    public WarehouseId WarehouseId { get; private set; }
-    public ItemId ItemId { get; private set; }
-    
-    public int Quantity { get; private set; }
+    public string Sku { get; private set; }
+    public string Name { get; private set; }
 }

@@ -12,51 +12,68 @@ public class WarehouseContext(DbContextOptions<WarehouseContext> options) : DbCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var warehouseEntity = modelBuilder.Entity<Warehouse>();
+        modelBuilder.Entity<Warehouse>(b =>
+        {
+            b.HasKey(w => w.Id);
+            b.Property(w => w.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            b.HasIndex(w => w.Name)
+                .IsUnique();
+            b.Property(w => w.Id)
+                .ValueGeneratedOnAdd();
+            b.Property(w => w.Id)
+                .HasConversion<WarehouseIdValueConverter>();
+            b.HasMany(w => w.Inventory)
+                .WithOne()
+                .HasForeignKey(si => si.WarehouseId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-        warehouseEntity.HasKey(w => w.Id);
-        warehouseEntity.Property(w => w.Name)
-            .IsRequired()
-            .HasMaxLength(100);
-        warehouseEntity.HasIndex(w => w.Name)
-            .IsUnique();
-        warehouseEntity.Property(w => w.Id)
-            .ValueGeneratedOnAdd();
-        warehouseEntity.Property(w => w.Id)
-            .HasConversion<WarehouseIdValueConverter>();
+        modelBuilder.Entity<Item>(b =>
+        {
+            b.HasKey(i => i.Id);
+            b.Property(i => i.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            b.HasIndex(i => i.Name)
+                .IsUnique();
+            b.Property(i => i.Sku)
+                .IsRequired()
+                .HasMaxLength(50);
+            b.HasIndex(i => i.Sku)
+                .IsUnique();
+            b.Property(i => i.Id)
+                .ValueGeneratedOnAdd();
+            b.Property(i => i.Id)
+                .HasConversion<ItemIdValueConverter>();
+        });
 
-        var itemEntity = modelBuilder.Entity<Item>();
+        modelBuilder.Entity<StockItem>(b =>
+        {
+            b.HasKey(si => si.Id);
+            b.Property(si => si.Quantity)
+                .IsRequired();
+            b.HasIndex(si => new { si.WarehouseId, si.ItemId })
+                .IsUnique();
+            b.Property(si => si.Id)
+                .ValueGeneratedOnAdd();
+            b.Property(si => si.Id)
+                .HasConversion<StockItemIdValueConverter>();
+            b.Property(si => si.WarehouseId)
+                .HasConversion<WarehouseIdValueConverter>();
+            b.Property(si => si.ItemId)
+                .HasConversion<ItemIdValueConverter>();
 
-        itemEntity.HasKey(i => i.Id);
-        itemEntity.Property(i => i.Name)
-            .IsRequired()
-            .HasMaxLength(100);
-        itemEntity.HasIndex(i => i.Name)
-            .IsUnique();
-        itemEntity.Property(i => i.Sku)
-            .IsRequired()
-            .HasMaxLength(50);
-        itemEntity.HasIndex(i => i.Sku)
-            .IsUnique();
-        itemEntity.Property(i => i.Id)
-            .ValueGeneratedOnAdd();
-        itemEntity.Property(i => i.Id)
-            .HasConversion<ItemIdValueConverter>();
-
-        var stockItemEntity = modelBuilder.Entity<StockItem>();
-
-        stockItemEntity.HasKey(si => si.Id);
-        stockItemEntity.Property(si => si.Quantity)
-            .IsRequired();
-        stockItemEntity.HasIndex(si => new { si.WarehouseId, si.ItemId })
-            .IsUnique();
-        stockItemEntity.Property(si => si.Id)
-            .ValueGeneratedOnAdd();
-        stockItemEntity.Property(si => si.Id)
-            .HasConversion<StockItemIdValueConverter>();
-        stockItemEntity.Property(si => si.WarehouseId)
-            .HasConversion<WarehouseIdValueConverter>();
-        stockItemEntity.Property(si => si.ItemId)
-            .HasConversion<ItemIdValueConverter>();
+            b.OwnsOne(si => si.ItemInfo, ii =>
+            {
+                ii.Property(i => i.Sku)
+                    .IsRequired()
+                    .HasMaxLength(50);
+                ii.Property(i => i.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+        });
     }
 }
