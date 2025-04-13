@@ -21,9 +21,7 @@ public readonly struct ItemId(Guid value) : IEquatable<ItemId>
 
     public override bool Equals(object? obj)
     {
-        if (obj is ItemId other) return Value.Equals(other.Value);
-
-        return false;
+        return obj is ItemId other && Equals(other);
     }
 
     public bool Equals(ItemId other)

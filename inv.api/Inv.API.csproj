@@ -7,20 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.2.0" />
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.2.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.1.13"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Inv.Application\Inv.Application.csproj" />
-      <ProjectReference Include="..\Inv.Domain\Inv.Domain.csproj" />
-      <ProjectReference Include="..\Inv.Infrastructure\Inv.Infrastructure.csproj" />
-      <ProjectReference Include="..\Inv.ServiceDefaults\Inv.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\Inv.Application\Inv.Application.csproj"/>
+        <ProjectReference Include="..\Inv.Domain\Inv.Domain.csproj"/>
+        <ProjectReference Include="..\Inv.Infrastructure\Inv.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Inv.ServiceDefaults\Inv.ServiceDefaults.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -4,6 +4,11 @@ namespace Inv.Domain.Entities;
 
 public class StockItem(WarehouseId warehouseId, ItemId itemId, ItemInfo itemInfo, int quantity)
 {
+    public StockItem(WarehouseId warehouseId, ItemId itemId, int quantity)
+        : this(warehouseId, itemId, new(), quantity)
+    {
+    }
+
     public StockItemId Id { get; private set; }
 
     public WarehouseId WarehouseId { get; private set; } = warehouseId;
@@ -29,6 +34,11 @@ public class StockItem(WarehouseId warehouseId, ItemId itemId, ItemInfo itemInfo
 
 public class ItemInfo(string sku, string name)
 {
+    public ItemInfo()
+        : this(string.Empty, string.Empty)
+    {
+    }
+
     public string Sku { get; private set; } = sku;
     public string Name { get; private set; } = name;
 }

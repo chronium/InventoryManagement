@@ -1,6 +1,7 @@
 using Inv.Application.Interfaces;
 using Inv.Domain.Entities;
 using Inv.Domain.Entities.IdTypes;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inv.Infrastructure.Repositories;
 
@@ -13,7 +14,9 @@ public class ItemRepository(WarehouseContext dbContext) : IItemRepository
 
     public Task<List<Item>> GetAllAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return dbContext.Items
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
     public Task AddAsync(Item item, CancellationToken cancellationToken)

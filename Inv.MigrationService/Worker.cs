@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using Bogus;
+using Inv.Domain.Entities;
 using Inv.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Trace;
@@ -36,15 +38,26 @@ public class Worker(
     private static async Task RunMigrationAsync(WarehouseContext dbContext, CancellationToken cancellationToken)
     {
         var strategy = dbContext.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(async () =>
+        await strategy.ExecuteAsync(dbContext, async (context, cancellationToken) =>
         {
             // Run migration in a transaction to avoid partial migration if it fails.
-            await dbContext.Database.MigrateAsync(cancellationToken);
-        });
+            await context.Database.MigrateAsync(cancellationToken);
+        }, cancellationToken);
     }
 
-    private static Task SeedDataAsync(WarehouseContext dbContext, CancellationToken cancellationToken)
+    private static async Task SeedDataAsync(WarehouseContext dbContext, CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        var testItems = new Faker<Item>()
+            .CustomInstantiator(f => new(f.Commerce.Ean13(), f.Commerce.ProductName()))
+            .Generate(10);
+
+        var testWarehouses = new Faker<Warehouse>()
+            .CustomInstantiator(f => new(f.Commerce.Department()))
+            .Generate(2);
+
+        await dbContext.Items.AddRangeAsync(testItems, cancellationToken);
+        await dbContext.Warehouses.AddRangeAsync(testWarehouses, cancellationToken);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
