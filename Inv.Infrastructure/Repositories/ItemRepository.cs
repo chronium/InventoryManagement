@@ -7,7 +7,7 @@ namespace Inv.Infrastructure.Repositories;
 
 public class ItemRepository(WarehouseContext dbContext) : IItemRepository
 {
-    public Task<Item> GetByIdAsync(ItemId id, CancellationToken cancellationToken)
+    public Task<Item?> GetByIdAsync(ItemId id, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

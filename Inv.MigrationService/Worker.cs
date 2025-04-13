@@ -38,25 +38,30 @@ public class Worker(
     private static async Task RunMigrationAsync(WarehouseContext dbContext, CancellationToken cancellationToken)
     {
         var strategy = dbContext.Database.CreateExecutionStrategy();
-        await strategy.ExecuteAsync(dbContext, async (context, cancellationToken) =>
+        await strategy.ExecuteAsync(dbContext, static async (dbContext, cancellationToken) =>
         {
             // Run migration in a transaction to avoid partial migration if it fails.
-            await context.Database.MigrateAsync(cancellationToken);
+            await dbContext.Database.MigrateAsync(cancellationToken);
         }, cancellationToken);
     }
 
     private static async Task SeedDataAsync(WarehouseContext dbContext, CancellationToken cancellationToken)
     {
+        var randomizer = new Randomizer();
+
         var testItems = new Faker<Item>()
             .CustomInstantiator(f => new(f.Commerce.Ean13(), f.Commerce.ProductName()))
             .Generate(10);
+        await dbContext.Items.AddRangeAsync(testItems, cancellationToken);
 
         var testWarehouses = new Faker<Warehouse>()
             .CustomInstantiator(f => new(f.Commerce.Department()))
             .Generate(2);
-
-        await dbContext.Items.AddRangeAsync(testItems, cancellationToken);
         await dbContext.Warehouses.AddRangeAsync(testWarehouses, cancellationToken);
+
+        foreach (var warehouse in testWarehouses)
+        foreach (var item in randomizer.ListItems(testItems))
+            warehouse.AddStock(item.Id, new(item.Sku, item.Name), new Random().Next(1, 100));
 
         await dbContext.SaveChangesAsync(cancellationToken);
     }

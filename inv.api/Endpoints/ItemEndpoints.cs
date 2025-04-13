@@ -14,7 +14,7 @@ public static class ItemEndpoints
         return group;
     }
 
-    public static async Task<Ok<List<ItemDto>>> GetAllItemsAsync([FromServices] GetAllItemsHandler handler,
+    private static async Task<Ok<List<ItemDto>>> GetAllItemsAsync([FromServices] GetAllItemsHandler handler,
         CancellationToken cancellationToken)
     {
         return TypedResults.Ok(await handler.Handle(new(), cancellationToken));

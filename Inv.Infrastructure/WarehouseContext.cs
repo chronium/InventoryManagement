@@ -24,10 +24,13 @@ public class WarehouseContext(DbContextOptions<WarehouseContext> options) : DbCo
                 .ValueGeneratedOnAdd();
             b.Property(w => w.Id)
                 .HasConversion<WarehouseIdValueConverter>();
-            b.HasMany(w => w.Inventory)
+
+            b.HasMany<StockItem>(nameof(Warehouse.Inventory))
                 .WithOne()
-                .HasForeignKey(si => si.WarehouseId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(s => s.WarehouseId);
+
+            b.Metadata.FindNavigation(nameof(Warehouse.Inventory))!
+                .SetPropertyAccessMode(PropertyAccessMode.Field);
         });
 
         modelBuilder.Entity<Item>(b =>

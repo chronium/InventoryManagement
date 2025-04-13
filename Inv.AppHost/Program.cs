@@ -1,15 +1,17 @@
+using Projects;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("pgserv");
 var db = postgres.AddDatabase("whse");
 
-var migrationService = builder.AddProject<Projects.Inv_MigrationService>("migration")
+var migrationService = builder.AddProject<Inv_MigrationService>("migration")
     .WithReference(db)
     .WaitFor(db);
 
-var api = builder.AddProject<Projects.Inv_API>("api")
+var api = builder.AddProject<Inv_API>("api")
     .WithReference(db)
     .WaitFor(db)
-    .WaitFor(migrationService);
+    .WaitForCompletion(migrationService);
 
 builder.Build().Run();

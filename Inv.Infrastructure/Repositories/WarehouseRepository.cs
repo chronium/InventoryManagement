@@ -7,9 +7,11 @@ namespace Inv.Infrastructure.Repositories;
 
 public class WarehouseRepository(WarehouseContext dbContext) : IWarehouseRepository
 {
-    public Task<Warehouse> GetByIdAsync(WarehouseId id, CancellationToken cancellationToken)
+    public async Task<Warehouse?> GetByIdAsync(WarehouseId id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await dbContext.Warehouses
+            .Include(w => w.Inventory)
+            .FirstOrDefaultAsync(w => w.Id == id, cancellationToken);
     }
 
     public Task<List<Warehouse>> GetAllAsync(CancellationToken cancellationToken)
