@@ -12,6 +12,19 @@ public class StockItem(WarehouseId warehouseId, ItemId itemId, ItemInfo itemInfo
     public int Quantity { get; private set; } = quantity;
 
     public ItemInfo ItemInfo { get; private set; } = itemInfo;
+
+    public void Increase(int quantity)
+    {
+        Quantity += quantity;
+    }
+
+    public void Decrease(int quantity)
+    {
+        if (Quantity < quantity)
+            throw new InvalidOperationException("Not enough stock to decrease.");
+
+        Quantity -= quantity;
+    }
 }
 
 public class ItemInfo

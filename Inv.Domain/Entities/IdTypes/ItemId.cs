@@ -1,17 +1,48 @@
 namespace Inv.Domain.Entities.IdTypes;
 
-public readonly struct ItemId
+public readonly struct ItemId(Guid value) : IEquatable<ItemId>
 {
-    public ItemId(Guid value)
+    public Guid Value { get; } = value;
+
+    public static explicit operator Guid(ItemId id)
     {
-        Value = value;
+        return id.Value;
     }
 
-    public Guid Value { get; }
+    public static explicit operator ItemId(Guid id)
+    {
+        return new(id);
+    }
 
-    public static explicit operator Guid(ItemId id) => id.Value;
+    public override string ToString()
+    {
+        return Value.ToString();
+    }
 
-    public static explicit operator ItemId(Guid id) => new(id);
+    public override bool Equals(object? obj)
+    {
+        if (obj is ItemId other) return Value.Equals(other.Value);
 
-    public override string ToString() => Value.ToString();
+        return false;
+    }
+
+    public bool Equals(ItemId other)
+    {
+        return Value.Equals(other.Value);
+    }
+
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
+
+    public static bool operator ==(ItemId left, ItemId right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ItemId left, ItemId right)
+    {
+        return !(left == right);
+    }
 }
